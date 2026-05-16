@@ -14,7 +14,7 @@ class DBAdminController extends Controller
         $jumlahPengguna = Pengguna::count();
 
         // Hitung jumlah tagihan yang belum lunas
-        $jumlahTagihan = Tagihan::where('status', 'Belum Lunas')->count();
+        $jumlahTagihan = Tagihan::where('status', 'belum lunas')->count();
 
         return view('admin.dashboard.index', compact('jumlahPengguna', 'jumlahTagihan'));
     }
