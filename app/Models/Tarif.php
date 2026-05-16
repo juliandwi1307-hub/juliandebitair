@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tarif extends Model
 {
-    protected $table = 'tarif'; // ganti sesuai nama tabel
+    protected $table = 'tarifs';
+    protected $fillable = ['harga'];
 }

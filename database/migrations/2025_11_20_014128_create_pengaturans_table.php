@@ -17,6 +17,7 @@ return new class extends Migration
                 $table->string('pengaturan');
                 $table->timestamps();
             });
+            DB::table('pengaturan')->insert(['pengaturan' => 'Informasi belum diisi.', 'created_at' => now(), 'updated_at' => now()]);
         }
     }
 

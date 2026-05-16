@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tagihan extends Model
 {
-    protected $table = 'tagihan';
+    protected $table = 'tagihans';
 
     protected $fillable = [
         'pengguna_id',

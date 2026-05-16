@@ -10,8 +10,8 @@ class PengaturanController extends Controller
 {
     public function index()
     {
-        $pengaturan = Pengaturan::first();
-        $tarif = Tarif::first();
+        $pengaturan = Pengaturan::first() ?? Pengaturan::create(['pengaturan' => 'Informasi belum diisi.']);
+        $tarif = Tarif::first() ?? Tarif::create(['harga' => 0]);
         return view('admin.pengaturan.index', compact('pengaturan', 'tarif'));
     }
 
