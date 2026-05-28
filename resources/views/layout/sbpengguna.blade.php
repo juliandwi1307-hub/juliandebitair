@@ -63,8 +63,16 @@
                         <li class="nav-item">
                             <a href="{{ url('/infobayar') }}"
                                 class="nav-link {{ Request::is('infobayar') ? 'active' : '' }}">
-                                <i class="nav-icon bi bi-people"></i>
-                                <p>Info Bayar </p>
+                                <i class="nav-icon bi bi-receipt"></i>
+                                <p>Info Bayar</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ url('/waterusage') }}"
+                                class="nav-link {{ Request::is('waterusage') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-droplet-fill"></i>
+                                <p>Pemakaian Air</p>
                             </a>
                         </li>
 

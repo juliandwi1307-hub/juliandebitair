@@ -84,6 +84,14 @@
                         </li>
 
                         <li class="nav-item">
+                            <a href="{{ url('/waterusage') }}"
+                                class="nav-link {{ Request::is('waterusage*') ? 'active' : '' }}">
+                                <i class="nav-icon bi bi-droplet-fill"></i>
+                                <p>Water Usage</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a href="{{ url('/pengaturan') }}"
                                 class="nav-link {{ Request::is('pengaturan') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-gear"></i>

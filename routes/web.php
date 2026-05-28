@@ -9,6 +9,7 @@ use App\Http\Controllers\TagihController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DBPenggunaController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\WaterUsageController;
 
 Route::get('/', function () {
     return view('layout/login');
@@ -50,6 +51,10 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::put('/{id}', [TagihController::class, 'update'])->name('tagihan.update');
         Route::delete('/{id}', [TagihController::class, 'destroy'])->name('tagihan.destroy');
     });
+    // Water Usage Admin
+    Route::get('/waterusage', [WaterUsageController::class, 'adminIndex'])->name('waterusage.admin.index');
+    Route::get('/waterusage/{id}', [WaterUsageController::class, 'adminShow'])->name('waterusage.admin.show');
+
     // Pengaturan Sistem
     Route::prefix('pengaturan')->group(function () {
         Route::get('/', [PengaturanController::class, 'index'])->name('pengaturan.index');
@@ -62,6 +67,9 @@ Route::middleware(['auth:web'])->group(function () {
 
     // Dashboard Pengguna
     Route::get('/dashboard-pengguna', [DBPenggunaController::class, 'index'])->name('dashboard-pengguna');
+
+    // Water Usage Pengguna
+    Route::get('/waterusage', [WaterUsageController::class, 'userIndex'])->name('waterusage.user.index');
 
     // Riwayat dan Proses Pembayaran
     Route::prefix('infobayar')->group(function () {

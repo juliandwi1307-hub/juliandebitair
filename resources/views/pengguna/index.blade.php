@@ -28,6 +28,40 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
+                                    <!-- Live Meter Reading -->
+                                    <div class="col-12 mb-3">
+                                        <div class="card border-start card-primary h-100">
+                                            <div class="card-header py-2 px-3">
+                                                <h5 class="card-title mb-0 fs-6"><i class="bi bi-droplet-fill me-1 text-primary"></i> Pembacaan Meteran Terakhir</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                @if($tagihanTerakhir)
+                                                <div class="row text-center">
+                                                    <div class="col-4">
+                                                        <div class="fw-semibold text-muted small">Meteran Awal</div>
+                                                        <div class="fs-5 fw-bold">{{ $tagihanTerakhir->awal }} m³</div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="fw-semibold text-muted small">Meteran Akhir</div>
+                                                        <div class="fs-5 fw-bold">{{ $tagihanTerakhir->akhir }} m³</div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="fw-semibold text-muted small">Pemakaian</div>
+                                                        <div class="fs-5 fw-bold text-primary">{{ $tagihanTerakhir->jumlah }} m³</div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-center mt-2 text-muted small">
+                                                    {{ $tagihanTerakhir->bulan }} {{ $tagihanTerakhir->tahun }} &mdash; Tagihan: <strong>Rp {{ number_format($tagihanTerakhir->tagihan, 0, ',', '.') }}</strong>
+                                                </div>
+                                                @else
+                                                <p class="text-muted mb-0">Belum ada data meteran.</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
                                     <!-- Info Pembayaran -->
                                     <div class="col-lg-6 mb-3">
                                         <div class="card border-start card-warning h-100">

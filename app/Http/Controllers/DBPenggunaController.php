@@ -30,7 +30,10 @@ class DBPenggunaController extends Controller
         $pengaturan = Pengaturan::find(1);
         $informasiAdmin = $pengaturan?->pengaturan ?? 'Belum ada informasi dari admin.';
 
+        $tagihanTerakhir = Tagihan::where('pengguna_id', $user->id)
+            ->latest()
+            ->first();
 
-        return view('pengguna.index', compact('jumlahLunas', 'jumlahBelumLunas', 'informasiAdmin'));
+        return view('pengguna.index', compact('jumlahLunas', 'jumlahBelumLunas', 'informasiAdmin', 'tagihanTerakhir'));
     }
 }
