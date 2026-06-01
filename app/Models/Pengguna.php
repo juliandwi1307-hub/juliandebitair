@@ -18,6 +18,8 @@ class Pengguna extends Authenticatable
         'no_hp',
         'username',
         'password',
+        'meter_awal',
+        'meter_akhir',
     ];
 
     protected $hidden = [

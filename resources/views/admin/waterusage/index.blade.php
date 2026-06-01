@@ -21,34 +21,35 @@
                     </form>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-bordered table-hover mb-0">
-                        <thead class="table-light text-center">
-                            <tr>
-                                <th>No</th>
-                                <th>Nama</th>
-                                <th>Total Pemakaian (m³)</th>
-                                <th>Jumlah Tagihan</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($penggunas as $p)
-                            <tr class="text-center">
-                                <td>{{ $loop->iteration }}</td>
-                                <td class="text-start">{{ $p->nama }}</td>
-                                <td><span class="badge bg-primary">{{ $p->tagihans_sum_jumlah ?? 0 }} m³</span></td>
-                                <td>{{ $p->tagihans_count }}</td>
-                                <td>
-                                    <a href="{{ route('waterusage.admin.show', $p->id) }}" class="btn btn-sm btn-info">
-                                        <i class="bi bi-droplet-fill"></i> Detail
-                                    </a>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr><td colspan="5" class="text-center">Tidak ada data.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                    <div class="list-group list-group-flush border-0">
+                        @forelse($penggunas as $p)
+                        <div class="list-group-item border-0 border-bottom py-3 d-flex flex-column flex-md-row align-items-center justify-content-between">
+                            <div class="d-flex align-items-center w-100 mb-2 mb-md-0">
+                                <div class="bg-primary-subtle text-primary rounded-circle d-flex justify-content-center align-items-center me-3 flex-shrink-0" style="width: 48px; height: 48px; font-weight: bold; font-size: 1.2rem;">
+                                    {{ strtoupper(substr($p->nama, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 fw-bold text-dark">{{ $p->nama }}</h6>
+                                    <small class="text-muted"><i class="bi bi-receipt"></i> {{ $p->tagihans_count }} Tagihan tercatat</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between w-100 justify-content-md-end gap-4">
+                                <div class="text-md-end">
+                                    <span class="d-block text-muted small">Total Pemakaian</span>
+                                    <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">{{ $p->tagihans_sum_jumlah ?? 0 }} m³</span>
+                                </div>
+                                <a href="{{ route('waterusage.admin.show', $p->id) }}" class="btn btn-outline-info rounded-pill px-3 text-nowrap">
+                                    Detail <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center p-5">
+                            <i class="bi bi-droplet text-muted" style="font-size: 3rem;"></i>
+                            <p class="mt-3 text-muted">Belum ada data pemakaian.</p>
+                        </div>
+                        @endforelse
+                    </div>
                 </div>
                 <div class="card-footer">{{ $penggunas->links('pagination::bootstrap-5') }}</div>
             </div>

@@ -63,13 +63,13 @@
                                     {{-- Meter Awal --}}
                                     <div class="mb-3">
                                         <label for="awal" class="form-label">Meter Awal (m³)</label>
-                                        <input type="number" id="awal" name="awal" class="form-control">
+                                        <input type="number" id="awal" name="awal" class="form-control" readonly>
                                     </div>
 
                                     {{-- Meter Akhir --}}
                                     <div class="mb-3">
                                         <label for="akhir" class="form-label">Meter Akhir (m³)</label>
-                                        <input type="number" id="akhir" name="akhir" class="form-control">
+                                        <input type="number" id="akhir" name="akhir" class="form-control" readonly>
                                     </div>
 
                                     {{-- Jumlah Pemakaian --}}
@@ -144,12 +144,12 @@
                             penggunaList.innerHTML = '';
                             penggunaList.style.display = 'none';
 
-                            // Ambil meter terakhir
-                            fetch(`/api/data-terakhir/${p.id}`)
+                            // Ambil meter terakhir dari IoT
+                            fetch(`/pengguna/${p.id}/meter`)
                                 .then(res => res.json())
                                 .then(data => {
-                                    document.getElementById('awal').value = data
-                                        .meter_akhir || 0;
+                                    document.getElementById('awal').value = data.meter_awal || 0;
+                                    document.getElementById('akhir').value = data.meter_akhir || 0;
                                     hitung();
                                 });
                         });

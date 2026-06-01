@@ -39,7 +39,14 @@ class TagihController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'pengguna_id' => 'required|exists:pengguna,id',
+            'pengguna_id' => [
+                'required',
+                'exists:pengguna,id',
+                \Illuminate\Validation\Rule::unique('tagihan')->where(function ($query) use ($request) {
+                    return $query->where('bulan', $request->bulan)
+                                 ->where('tahun', $request->tahun);
+                })
+            ],
             'bulan' => 'required|string',
             'tahun' => 'required|integer',
             'awal' => 'required|numeric|min:0',
@@ -48,6 +55,7 @@ class TagihController extends Controller
         ], [
             'pengguna_id.required' => 'Pengguna wajib dipilih.',
             'pengguna_id.exists' => 'Pengguna yang dipilih tidak ditemukan.',
+            'pengguna_id.unique' => 'Tagihan untuk pelanggan ini pada bulan dan tahun tersebut sudah ada!',
             'bulan.required' => 'Bulan wajib diisi.',
             'tahun.required' => 'Tahun wajib diisi.',
             'tahun.integer' => 'Tahun harus berupa angka.',

@@ -29,6 +29,7 @@ Route::middleware(['auth:admin'])->group(function () {
         Route::get('/', [PenggunaController::class, 'index'])->name('pengguna.index');
         Route::get('/create', [PenggunaController::class, 'create'])->name('pengguna.create');
         Route::post('/', [PenggunaController::class, 'store'])->name('pengguna.store');
+        Route::get('/{id}/meter', [PenggunaController::class, 'getMeter'])->name('pengguna.meter');
         Route::get('/{id}', [PenggunaController::class, 'edit'])->name('pengguna.edit');
         Route::put('/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
         Route::delete('/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
@@ -69,7 +70,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/dashboard-pengguna', [DBPenggunaController::class, 'index'])->name('dashboard-pengguna');
 
     // Water Usage Pengguna
-    Route::get('/waterusage', [WaterUsageController::class, 'userIndex'])->name('waterusage.user.index');
+    Route::get('/pemakaian-air', [WaterUsageController::class, 'userIndex'])->name('waterusage.user.index');
 
     // Riwayat dan Proses Pembayaran
     Route::prefix('infobayar')->group(function () {

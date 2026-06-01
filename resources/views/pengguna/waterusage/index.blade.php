@@ -26,7 +26,7 @@
                 <div class="col-md-4">
                     <div class="small-box text-bg-info">
                         <div class="inner">
-                            <h3>{{ $tagihans->last()?->akhir ?? 0 }} m³</h3>
+                            <h3>{{ Auth::guard('web')->user()->meter_akhir ?? 0 }} m³</h3>
                             <p>Meteran Terakhir</p>
                         </div>
                         <i class="bi bi-speedometer2 small-box-icon"></i>
@@ -48,40 +48,45 @@
                     <h3 class="card-title">Riwayat Pemakaian Air</h3>
                 </div>
                 <div class="card-body p-0">
-                    <table class="table table-bordered mb-0">
-                        <thead class="table-light text-center">
-                            <tr>
-                                <th>No</th>
-                                <th>Bulan</th>
-                                <th>Tahun</th>
-                                <th>Awal (m³)</th>
-                                <th>Akhir (m³)</th>
-                                <th>Pemakaian (m³)</th>
-                                <th>Tagihan</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($tagihans as $i => $t)
-                            <tr class="text-center">
-                                <td>{{ $i + 1 }}</td>
-                                <td>{{ $t->bulan }}</td>
-                                <td>{{ $t->tahun }}</td>
-                                <td>{{ $t->awal }}</td>
-                                <td>{{ $t->akhir }}</td>
-                                <td><strong class="text-primary">{{ $t->jumlah }}</strong></td>
-                                <td>Rp {{ number_format($t->tagihan, 0, ',', '.') }}</td>
-                                <td>
-                                    <span class="badge bg-{{ $t->status == 'lunas' ? 'success' : 'danger' }}">
-                                        {{ ucfirst($t->status) }}
-                                    </span>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr><td colspan="8" class="text-center">Belum ada data pemakaian.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                    <div class="list-group list-group-flush border-0">
+                        @forelse($tagihans as $i => $t)
+                        <div class="list-group-item border-0 border-bottom py-3">
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                                <div class="d-flex align-items-center mb-3 mb-md-0">
+                                    <div class="bg-light text-primary rounded-3 d-flex flex-column justify-content-center align-items-center me-3 px-3 py-2 text-center" style="min-width: 80px;">
+                                        <span class="fs-6 fw-bold">{{ substr($t->bulan, 0, 3) }}</span>
+                                        <span class="small text-muted">{{ $t->tahun }}</span>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold text-dark">Tagihan Air</h6>
+                                        <div class="d-flex gap-3 text-muted small mt-1">
+                                            <span><i class="bi bi-arrow-right-circle text-secondary"></i> Awal: {{ $t->awal }}</span>
+                                            <span><i class="bi bi-arrow-left-circle text-secondary"></i> Akhir: {{ $t->akhir }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between w-100 w-md-auto justify-content-md-end gap-4">
+                                    <div class="text-md-end">
+                                        <span class="d-block text-muted small mb-1">Pemakaian: <strong class="text-primary">{{ $t->jumlah }} m³</strong></span>
+                                        <span class="fs-5 fw-bold text-dark">Rp {{ number_format($t->tagihan, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div>
+                                        @if($t->status == 'lunas')
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2"><i class="bi bi-check-circle-fill me-1"></i> Lunas</span>
+                                        @else
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2"><i class="bi bi-x-circle-fill me-1"></i> Belum</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center p-5">
+                            <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                            <p class="mt-3 text-muted">Belum ada riwayat tagihan.</p>
+                        </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
 

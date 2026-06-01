@@ -73,52 +73,50 @@
                                 </form>
 
 
-                                <!-- Table -->
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover align-middle">
-                                        <thead class="table-light text-center">
-                                            <tr>
-                                                <th style="width: 50px;">No.</th>
-                                                <th>Nama</th>
-                                                <th>Username</th>
-                                                <th style="width: 120px;">Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($pengguna as $index => $pguna)
-                                                <tr>
-                                                    <td class="text-center">{{ $pengguna->firstItem() + $index }}</td>
-                                                    <td>{{ $pguna->nama }}</td>
-                                                    <td>{{ $pguna->username }}</td>
-                                                    <td class="text-center">
-                                                        <a href="{{ url('pengguna/' . $pguna->id) }}"
-                                                            class="btn btn-sm btn-warning me-1" title="Edit">
-                                                            <i class="bi bi-pencil-square"></i>
+                                <!-- Card Grid Layout -->
+                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                                    @forelse ($pengguna as $index => $pguna)
+                                        <div class="col">
+                                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                                                <div class="card-body p-4 text-center d-flex flex-column">
+                                                    <!-- Avatar -->
+                                                    <div class="mb-3 mx-auto d-flex justify-content-center align-items-center bg-primary-subtle text-primary rounded-circle" style="width: 70px; height: 70px; font-size: 28px; font-weight: bold;">
+                                                        {{ strtoupper(substr($pguna->nama, 0, 1)) }}
+                                                    </div>
+                                                    
+                                                    <!-- Info -->
+                                                    <h5 class="fw-bold text-dark mb-1">{{ $pguna->nama }}</h5>
+                                                    <p class="text-muted small mb-4">@ {{ $pguna->username }}</p>
+                                                    
+                                                    <!-- Actions -->
+                                                    <div class="d-flex justify-content-center gap-2 mt-auto">
+                                                        <a href="{{ url('pengguna/' . $pguna->id) }}" class="btn btn-sm btn-outline-primary px-3 rounded-pill">
+                                                            <i class="bi bi-pencil-square"></i> Edit
                                                         </a>
-                                                        <form action="{{ url('pengguna/' . $pguna->id) }}" method="POST"
-                                                            class="d-inline">
+                                                        <form action="{{ url('pengguna/' . $pguna->id) }}" method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                                onclick="return confirm('Yakin ingin menghapus?')">
-                                                                <i class="bi bi-eraser"></i>
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger px-3 rounded-pill" onclick="return confirm('Yakin ingin menghapus?')">
+                                                                <i class="bi bi-trash"></i> Hapus
                                                             </button>
                                                         </form>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="7" class="text-center">Data pengguna tidak ditemukan.
-                                                    </td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="col-12">
+                                            <div class="alert alert-light text-center p-5 border-0 shadow-sm rounded-4">
+                                                <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                                                <p class="mt-3 text-muted mb-0">Data pengguna tidak ditemukan.</p>
+                                            </div>
+                                        </div>
+                                    @endforelse
+                                </div>
 
-                                    <!-- Pagination -->
-                                    <div class="d-flex justify-content-end mt-3">
-                                        {{ $pengguna->links('pagination::bootstrap-5') }}
-                                    </div>
+                                <!-- Pagination -->
+                                <div class="d-flex justify-content-center mt-4">
+                                    {{ $pengguna->links('pagination::bootstrap-5') }}
                                 </div>
                             </div> <!-- /.card-body -->
                         </div> <!-- /.card -->

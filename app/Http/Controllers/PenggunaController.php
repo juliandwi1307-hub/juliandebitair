@@ -92,4 +92,13 @@ class PenggunaController extends Controller
         $pengguna->delete();
         return redirect('/pengguna')->with('success', 'Data Pengguna Berhasil Dihapus');
     }
+
+    public function getMeter($id)
+    {
+        $pengguna = Pengguna::findOrFail($id);
+        return response()->json([
+            'meter_awal' => $pengguna->meter_awal,
+            'meter_akhir' => $pengguna->meter_akhir,
+        ]);
+    }
 }
