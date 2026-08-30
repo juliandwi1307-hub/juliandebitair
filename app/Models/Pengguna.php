@@ -20,6 +20,7 @@ class Pengguna extends Authenticatable
         'password',
         'meter_awal',
         'meter_akhir',
+        'water_status',
     ];
 
     protected $hidden = [

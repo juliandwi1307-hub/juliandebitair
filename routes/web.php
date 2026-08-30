@@ -55,6 +55,7 @@ Route::middleware(['auth:admin'])->group(function () {
     // Water Usage Admin
     Route::get('/waterusage', [WaterUsageController::class, 'adminIndex'])->name('waterusage.admin.index');
     Route::get('/waterusage/{id}', [WaterUsageController::class, 'adminShow'])->name('waterusage.admin.show');
+    Route::post('/waterusage/{id}/toggle-status', [WaterUsageController::class, 'toggleStatus'])->name('waterusage.admin.toggle');
 
     // Pengaturan Sistem
     Route::prefix('pengaturan')->group(function () {

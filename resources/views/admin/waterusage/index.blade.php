@@ -7,6 +7,16 @@
             <div class="row">
                 <div class="col-sm-6"><h3 class="mb-0">Water Usage - Semua Pengguna</h3></div>
             </div>
+            @if(session('success'))
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-4" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 
@@ -37,6 +47,19 @@
                                 <div class="text-md-end">
                                     <span class="d-block text-muted small">Total Pemakaian</span>
                                     <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">{{ $p->tagihans_sum_jumlah ?? 0 }} m³</span>
+                                </div>
+                                <div class="text-md-end">
+                                    <span class="d-block text-muted small">Status Air</span>
+                                    <form action="{{ route('waterusage.admin.toggle', $p->id) }}" method="POST" class="m-0">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm rounded-pill px-3 text-nowrap {{ $p->water_status ? 'btn-success' : 'btn-danger' }}" style="box-shadow: none;" onclick="return confirm('Ubah status saluran air untuk pelanggan ini?')">
+                                            @if($p->water_status)
+                                                <i class="bi bi-droplet-fill"></i> Aktif
+                                            @else
+                                                <i class="bi bi-slash-circle"></i> Non-Aktif
+                                            @endif
+                                        </button>
+                                    </form>
                                 </div>
                                 <a href="{{ route('waterusage.admin.show', $p->id) }}" class="btn btn-outline-info rounded-pill px-3 text-nowrap">
                                     Detail <i class="bi bi-arrow-right ms-1"></i>
