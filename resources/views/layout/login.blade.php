@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Login | Julian Peler</title>
+    <title>Login | Irigasi RT6</title>
     <link rel="icon" type="image/png" href="{{ asset('images/tb-logo.jpg') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -52,7 +52,7 @@
             <div class="text-center login-logo mb-3">
                 <img src="{{ asset('images/tb-logo.jpg') }}" alt="Logo" class="mb-2" style="max-height: 80px;">
                 <br>
-                <a href="#"><b>Julian</b> Peler</a>
+                <a href="#"><b>Irigasi</b> RT6</a>
             </div>
 
 

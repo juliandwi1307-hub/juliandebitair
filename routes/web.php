@@ -77,4 +77,11 @@ Route::middleware(['auth:web'])->group(function () {
     Route::prefix('infobayar')->group(function () {
         Route::get('/', [PembayaranController::class, 'index'])->name('infobayar.index');
     });
+
+    // Payment Midtrans
+    Route::get('/pembayaran/{id}/bayar', [\App\Http\Controllers\PaymentController::class, 'pay'])->name('pembayaran.bayar');
+    Route::post('/pembayaran/{id}/cancel', [\App\Http\Controllers\PaymentController::class, 'cancelPayment'])->name('pembayaran.cancel');
 });
+
+// Midtrans Webhook (No Auth Required)
+Route::post('/midtrans/callback', [\App\Http\Controllers\PaymentController::class, 'callback']);

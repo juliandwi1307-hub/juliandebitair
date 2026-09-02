@@ -18,7 +18,8 @@ class Tagihan extends Model
         'jumlah',
         'tarif',
         'tagihan',
-        'status'
+        'status',
+        'snap_token'
     ];
     public function pengguna()
     {

@@ -34,6 +34,7 @@
                                                 <th>Jumlah (m&sup3)</th>
                                                 <th>Tagihan</th>
                                                 <th>Status</th>
+                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -53,10 +54,19 @@
                                                             {{ ucfirst($tagihan->status) }}
                                                         </span>
                                                     </td>
+                                                    <td>
+                                                        @if($tagihan->status != 'lunas')
+                                                            <a href="{{ route('pembayaran.bayar', $tagihan->id) }}" class="btn btn-sm btn-primary rounded-pill px-3">
+                                                                <i class="bi bi-wallet2"></i> Bayar
+                                                            </a>
+                                                        @else
+                                                            <button class="btn btn-sm btn-secondary rounded-pill px-3" disabled>Lunas</button>
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="11" class="text-center">Tidak ada data pembayaran.</td>
+                                                    <td colspan="10" class="text-center">Tidak ada data pembayaran.</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

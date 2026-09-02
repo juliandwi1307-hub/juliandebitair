@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Admin Banyu Julian</title>
+    <title>Admin Irigasi RT6</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
@@ -76,7 +76,7 @@
                 <a href="#" class="brand-link">
                     <img src="{{ asset('template/dist/assets/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
                         class="brand-image opacity-75 shadow" />
-                    <span class="brand-text fw-light">Julian Peler</span>
+                    <span class="brand-text fw-light">Irigasi RT6</span>
                 </a>
             </div>
 
@@ -87,7 +87,7 @@
                             <a href="{{ url('/dashboard-admin') }}"
                                 class="nav-link {{ Request::is('dashboard-admin') ? 'active' : '' }}">
                                 <i class="nav-icon bi bi-palette"></i>
-                                <p>Dashboard Julian</p>
+                                <p>Dashboard Irigasi RT6</p>
                             </a>
                         </li>
 
@@ -150,7 +150,7 @@
         <!-- FOOTER -->
         <footer class="app-footer">
             <div class="float-end d-none d-sm-inline">Admin Panel</div>
-            <strong>&copy; 2025 Banyu Julian.</strong> All rights reserved.
+            <strong>&copy; 2025 Irigasi RT6.</strong> All rights reserved.
         </footer>
     </div>
 
