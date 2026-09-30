@@ -50,6 +50,12 @@ class WaterUsageController extends Controller
         ]);
     }
 
+    public function adminRealtimeAll()
+    {
+        $penggunas = Pengguna::select('id', 'water_status')->get();
+        return response()->json($penggunas);
+    }
+
     // User: pemakaian milik sendiri
     public function userIndex()
     {

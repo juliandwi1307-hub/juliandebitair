@@ -100,6 +100,18 @@ class MqttListenWaterflow extends Command
                     'jumlah'  => $jumlah,
                     'tagihan' => $totalTagihan,
                 ]);
+            } else {
+                Tagihan::create([
+                    'pengguna_id' => $penggunaId,
+                    'bulan'       => $bulanIni,
+                    'tahun'       => $tahunIni,
+                    'awal'        => $pengguna->meter_awal,
+                    'akhir'       => $nowValue,
+                    'jumlah'      => $jumlah,
+                    'tarif'       => $hargaTarif,
+                    'tagihan'     => $totalTagihan,
+                    'status'      => 'belum lunas'
+                ]);
             }
 
             $this->info("[{$topic}] pengguna_id={$penggunaId}, awal={$pengguna->meter_awal}, akhir={$nowValue}, jumlah={$jumlah}, valve={$valveValue}");

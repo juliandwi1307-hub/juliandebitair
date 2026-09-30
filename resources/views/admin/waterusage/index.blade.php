@@ -80,3 +80,29 @@
     </div>
 </main>
 @endsection
+
+@section('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        setInterval(function() {
+            fetch('{{ route("waterusage.admin.realtimeAll") }}')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(user => {
+                        let btn = document.querySelector('form[action$="/waterusage/' + user.id + '/toggle-status"] button');
+                        if (btn) {
+                            if (user.water_status == 1) {
+                                btn.className = 'btn btn-sm rounded-pill px-3 text-nowrap btn-success';
+                                btn.innerHTML = '<i class="bi bi-droplet-fill"></i> Aktif';
+                            } else {
+                                btn.className = 'btn btn-sm rounded-pill px-3 text-nowrap btn-danger';
+                                btn.innerHTML = '<i class="bi bi-slash-circle"></i> Non-Aktif';
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("Error fetching real-time status:", error));
+        }, 5000); // Polling setiap 5 detik
+    });
+</script>
+@endsection
