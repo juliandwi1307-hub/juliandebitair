@@ -54,6 +54,7 @@ Route::middleware(['auth:admin'])->group(function () {
     });
     // Water Usage Admin
     Route::get('/waterusage', [WaterUsageController::class, 'adminIndex'])->name('waterusage.admin.index');
+    Route::get('/waterusage/{id}/realtime', [WaterUsageController::class, 'adminRealtime'])->name('waterusage.admin.realtime');
     Route::get('/waterusage/{id}', [WaterUsageController::class, 'adminShow'])->name('waterusage.admin.show');
     Route::post('/waterusage/{id}/toggle-status', [WaterUsageController::class, 'toggleStatus'])->name('waterusage.admin.toggle');
 
@@ -72,6 +73,7 @@ Route::middleware(['auth:web'])->group(function () {
 
     // Water Usage Pengguna
     Route::get('/pemakaian-air', [WaterUsageController::class, 'userIndex'])->name('waterusage.user.index');
+    Route::get('/pemakaian-air/realtime', [WaterUsageController::class, 'realtimeData'])->name('waterusage.realtime');
 
     // Riwayat dan Proses Pembayaran
     Route::prefix('infobayar')->group(function () {

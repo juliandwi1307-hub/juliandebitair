@@ -37,6 +37,19 @@ class WaterUsageController extends Controller
         return view('admin.waterusage.show', compact('pengguna', 'tagihans'));
     }
 
+    // Admin: realtime data per pengguna
+    public function adminRealtime($id)
+    {
+        $pengguna = Pengguna::findOrFail($id);
+
+        return response()->json([
+            'meter_akhir'  => $pengguna->meter_akhir ?? 0,
+            'meter_awal'   => $pengguna->meter_awal ?? 0,
+            'water_status' => $pengguna->water_status,
+            'pemakaian'    => max(0, ($pengguna->meter_akhir ?? 0) - ($pengguna->meter_awal ?? 0)),
+        ]);
+    }
+
     // User: pemakaian milik sendiri
     public function userIndex()
     {
@@ -49,6 +62,20 @@ class WaterUsageController extends Controller
         $totalPemakaian = $tagihans->sum('jumlah');
 
         return view('pengguna.waterusage.index', compact('tagihans', 'totalPemakaian'));
+    }
+
+    // API: realtime data untuk polling
+    public function realtimeData()
+    {
+        $user = Auth::guard('web')->user();
+        $pengguna = Pengguna::find($user->id);
+
+        return response()->json([
+            'meter_akhir'  => $pengguna->meter_akhir ?? 0,
+            'meter_awal'   => $pengguna->meter_awal ?? 0,
+            'water_status' => $pengguna->water_status,
+            'pemakaian'    => max(0, ($pengguna->meter_akhir ?? 0) - ($pengguna->meter_awal ?? 0)),
+        ]);
     }
 
     // Admin: toggle water status

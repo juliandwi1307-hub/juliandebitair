@@ -6,38 +6,53 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6"><h3 class="mb-0">Water Usage - {{ $pengguna->nama }}</h3></div>
+                <div class="col-sm-6 text-end">
+                    <span class="badge bg-success" id="status-badge">
+                        <i class="bi bi-circle-fill me-1" style="font-size:0.5rem;"></i> Live
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="app-content">
         <div class="container-fluid">
+            {{-- Realtime Cards --}}
             <div class="row mb-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="small-box text-bg-primary">
                         <div class="inner">
-                            <h3>{{ $tagihans->sum('jumlah') }} m³</h3>
-                            <p>Total Pemakaian</p>
+                            <h3 id="rt-meter-akhir">{{ $pengguna->meter_akhir ?? 0 }} <sup style="font-size:1rem">m³</sup></h3>
+                            <p>Meteran Sekarang</p>
+                        </div>
+                        <i class="bi bi-speedometer2 small-box-icon"></i>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="small-box text-bg-info">
+                        <div class="inner">
+                            <h3 id="rt-pemakaian">{{ max(0, ($pengguna->meter_akhir ?? 0) - ($pengguna->meter_awal ?? 0)) }} <sup style="font-size:1rem">m³</sup></h3>
+                            <p>Pemakaian Bulan Ini</p>
                         </div>
                         <i class="bi bi-droplet-fill small-box-icon"></i>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="small-box text-bg-success">
+                <div class="col-md-3">
+                    <div class="small-box text-bg-warning">
                         <div class="inner">
-                            <h3>{{ $tagihans->where('status','lunas')->count() }}</h3>
-                            <p>Tagihan Lunas</p>
+                            <h3>{{ $tagihans->sum('jumlah') }} m³</h3>
+                            <p>Total Pemakaian</p>
                         </div>
-                        <i class="bi bi-check-circle small-box-icon"></i>
+                        <i class="bi bi-calendar-month small-box-icon"></i>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="small-box text-bg-danger">
+                <div class="col-md-3">
+                    <div class="small-box" id="valve-box" style="background:{{ $pengguna->water_status ? '#198754' : '#dc3545' }};color:#fff;">
                         <div class="inner">
-                            <h3>{{ $tagihans->where('status','belum lunas')->count() }}</h3>
-                            <p>Belum Lunas</p>
+                            <h3 id="rt-valve">{{ $pengguna->water_status ? 'OPEN' : 'CLOSED' }}</h3>
+                            <p>Status Katup</p>
                         </div>
-                        <i class="bi bi-x-circle small-box-icon"></i>
+                        <i class="bi bi-toggles small-box-icon"></i>
                     </div>
                 </div>
             </div>
@@ -87,4 +102,29 @@
         </div>
     </div>
 </main>
+
+<script>
+function fetchRealtime() {
+    fetch('/waterusage/{{ $pengguna->id }}/realtime')
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('rt-meter-akhir').innerHTML = data.meter_akhir + ' <sup style="font-size:1rem">m³</sup>';
+            document.getElementById('rt-pemakaian').innerHTML   = data.pemakaian   + ' <sup style="font-size:1rem">m³</sup>';
+
+            const isOpen   = data.water_status == 1;
+            document.getElementById('rt-valve').textContent     = isOpen ? 'OPEN' : 'CLOSED';
+            document.getElementById('valve-box').style.background = isOpen ? '#198754' : '#dc3545';
+
+            document.getElementById('status-badge').className   = 'badge bg-success';
+            document.getElementById('status-badge').innerHTML   = '<i class="bi bi-circle-fill me-1" style="font-size:0.5rem;"></i> Live';
+        })
+        .catch(() => {
+            document.getElementById('status-badge').className = 'badge bg-secondary';
+            document.getElementById('status-badge').innerHTML = '<i class="bi bi-circle-fill me-1" style="font-size:0.5rem;"></i> Offline';
+        });
+}
+
+fetchRealtime();
+setInterval(fetchRealtime, 3000);
+</script>
 @endsection

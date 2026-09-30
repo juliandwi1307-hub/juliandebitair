@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Pengguna;
+use App\Models\SensorLog;
 use App\Models\Tagihan;
 use App\Models\Tarif;
-use App\Models\Pengguna;
 use Illuminate\Console\Command;
 use PhpMqtt\Client\MqttClient;
 use PhpMqtt\Client\ConnectionSettings;
@@ -25,18 +26,20 @@ class MqttListenWaterflow extends Command
         $mqtt = new MqttClient(config('mqtt.host'), config('mqtt.port'), config('mqtt.client_id'));
         $mqtt->connect($settings, true);
 
-        $this->info('Connected to HiveMQ. Listening on user/waterflow...');
+        $this->info('Connected to HiveMQ. Listening on /user/waterflow and user/waterflow...');
 
-        $mqtt->subscribe('user/waterflow', function (string $topic, string $message) {
+        $handler = function (string $topic, string $message) {
             $data = json_decode($message, true);
 
+            // Skip heartbeat dan response valve (tidak ada field 'now')
             if (!isset($data['id'], $data['now'])) {
-                $this->warn("Invalid payload: {$message}");
+                $this->line("Skip: {$message}");
                 return;
             }
 
             $penggunaId = (int) $data['id'];
-            $nowValue = (int) $data['now'];
+            $nowValue   = (int) $data['now'];
+            $valveValue = $data['valve'] ?? null;
 
             $pengguna = Pengguna::find($penggunaId);
 
@@ -45,37 +48,65 @@ class MqttListenWaterflow extends Command
                 return;
             }
 
-            // Cari log terakhir untuk mengecek apakah sudah berganti bulan
-            $latestLog = \App\Models\SensorLog::where('pengguna_id', $penggunaId)
+            $latestLog = SensorLog::where('pengguna_id', $penggunaId)
                 ->orderBy('created_at', 'desc')
                 ->first();
 
             if (!$latestLog) {
-                // Jika belum ada log sama sekali, set meter_awal ke nilai now saat ini
+                // Belum ada log sama sekali, set awal ke now
                 $pengguna->meter_awal = $nowValue;
-            } else {
-                $logMonth = $latestLog->created_at->format('Y-m');
-                $currentMonth = date('Y-m');
-                
-                // Jika berganti bulan, log awal bulanan (meter_awal) diganti dengan log paling terbaru (meter_akhir sebelumnya)
-                if ($logMonth !== $currentMonth) {
-                    $pengguna->meter_awal = $pengguna->meter_akhir;
-                }
+            } elseif ($latestLog->created_at->format('Y-m') !== date('Y-m')) {
+                // Berganti bulan, awal = akhir bulan lalu
+                $pengguna->meter_awal = $pengguna->meter_akhir;
+            } elseif ($pengguna->meter_awal > $nowValue) {
+                // meter_awal tidak logis (lebih besar dari now), reset ke now
+                $pengguna->meter_awal = $nowValue;
             }
 
-            // Update meter_akhir dengan nilai now terbaru
             $pengguna->meter_akhir = $nowValue;
+
+            if ($valveValue !== null) {
+                $pengguna->water_status = ($valveValue === 'OPEN') ? 1 : 0;
+            }
+
             $pengguna->save();
 
-            // Simpan ke sensor_logs sebagai log lanjutan
-            \App\Models\SensorLog::create([
+            SensorLog::create([
                 'pengguna_id' => $penggunaId,
-                'meter_awal' => $pengguna->meter_awal,
+                'meter_awal'  => $pengguna->meter_awal,
                 'meter_akhir' => $nowValue,
             ]);
 
-            $this->info("Meteran updated & logged for pengguna_id={$penggunaId}, awal={$pengguna->meter_awal}, akhir={$nowValue}");
-        }, MqttClient::QOS_AT_LEAST_ONCE);
+            // Sinkronkan tagihan bulan ini dengan data meteran terbaru
+            $bulanMap = [
+                1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',
+                7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'
+            ];
+            $bulanIni  = $bulanMap[(int) date('n')];
+            $tahunIni  = (int) date('Y');
+            $jumlah    = max(0, $nowValue - $pengguna->meter_awal);
+            $hargaTarif = Tarif::first()?->harga ?? 0;
+            $totalTagihan = $jumlah * $hargaTarif;
+
+            $tagihan = Tagihan::where('pengguna_id', $penggunaId)
+                ->where('bulan', $bulanIni)
+                ->where('tahun', $tahunIni)
+                ->first();
+
+            if ($tagihan) {
+                $tagihan->update([
+                    'awal'    => $pengguna->meter_awal,
+                    'akhir'   => $nowValue,
+                    'jumlah'  => $jumlah,
+                    'tagihan' => $totalTagihan,
+                ]);
+            }
+
+            $this->info("[{$topic}] pengguna_id={$penggunaId}, awal={$pengguna->meter_awal}, akhir={$nowValue}, jumlah={$jumlah}, valve={$valveValue}");
+        };
+
+        $mqtt->subscribe('/user/waterflow', $handler, MqttClient::QOS_AT_LEAST_ONCE);
+        $mqtt->subscribe('user/waterflow', $handler, MqttClient::QOS_AT_LEAST_ONCE);
 
         $mqtt->loop(true);
         $mqtt->disconnect();
